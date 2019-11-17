@@ -1,6 +1,7 @@
 const fs = require("fs");
 const axios = require("axios");
 const inquirer = require("inquirer");
+var pdf = require('html-pdf');
 
 function generateHTML(data,colour) {
   return `
@@ -27,7 +28,11 @@ function generateHTML(data,colour) {
       background-color: ${colour};
       color:white;
     }
-  
+    a{
+      cursor:pointer;
+      text-decoration: none;
+      color:white;
+    }
     img{
       width: 200px;
       height: 200px;
@@ -38,14 +43,28 @@ function generateHTML(data,colour) {
     <title>Document</title>
   </head>
     <body>
-      <div class="container-fluid vw-100 vh-100 bg-light">
+      <div class="container-fluid vh-100 bg-light">
       <!--main card body-->
           <div class="row justify-content-center">
               <div class="col-lg-8 card-body d-block border shadow rounded-lg p-3 m-3">
                   <img class="rounded-circle justify-content-center" src="${data.avatar_url}" alt="...">
                   <h2 class="text-center">Hi! </h2>
                   <h2 class="text-center"> My name is ${data.name}</h2>
-                  <h4 class="text-center"> Location Git Blog</h4>
+                  <h6 class="text-center"> 
+                    <a class="p-3"  href="https://www.google.com/maps/place/${data.location}" target="_blank"><svg id="i-location" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                      <circle cx="16" cy="11" r="4" />
+                      <path d="M24 15 C21 22 16 30 16 30 16 30 11 22 8 15 5 8 10 2 16 2 22 2 27 8 24 15 Z" />
+                  </svg> ${data.location}</a>
+                    <a class="p-3" href=${data.html_url} target="_blank">
+                      <svg id="i-github" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
+                        <path stroke-width="0" fill="currentColor" d="M32 0 C14 0 0 14 0 32 0 53 19 62 22 62 24 62 24 61 24 60 L24 55 C17 57 14 53 13 50 13 50 13 49 11 47 10 46 6 44 10 44 13 44 15 48 15 48 18 52 22 51 24 50 24 48 26 46 26 46 18 45 12 42 12 31 12 27 13 24 15 22 15 22 13 18 15 13 15 13 20 13 24 17 27 15 37 15 40 17 44 13 49 13 49 13 51 20 49 22 49 22 51 24 52 27 52 31 52 42 45 45 38 46 39 47 40 49 40 52 L40 60 C40 61 40 62 42 62 45 62 64 53 64 32 64 14 50 0 32 0 Z" />
+                    </svg> Git</a>
+                    <a class="p-3" href=${data.blog} target="_blank">
+                      <svg id="i-feed" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                        <circle cx="6" cy="26" r="2" fill="currentColor" />
+                        <path d="M4 15 C11 15 17 21 17 28 M4 6 C17 6 26 15 26 28" />
+                    </svg> Blog</a>
+                  </h6>
               </div>
           </div>
           <div class="row justify-content-center">
@@ -84,8 +103,8 @@ function promptUser() {
         name: "username"
       },
       {
-        name: "colour",
-        message: "Enter your favourite colour."
+        message: "Enter your favourite colour:",
+        name: "colour"
       }
     ])
     .then(function ({username,colour}) {
@@ -106,17 +125,16 @@ function promptUser() {
           });
         });
     })
-  //   .then(() => {
-  //     /* read from file system */
-  //     var html = fs.readFileSync('./index.html', 'utf8');
-  //     var options = { format: 'Letter' };
-  //     /* convert to pdf */
-  //     pdf.create(html, options).toFile('./touchdown.pdf', function(err, res) {
-  //         if (err) return console.log(err);
-  //         console.log(res);
-  //       });
-  // });
-
+    .then(() => {
+      /* read from file system */
+      var html = fs.readFileSync('./profile.html', 'utf8');
+      var options = { format: 'Letter' };
+      /* convert to pdf */
+      pdf.create(html, options).toFile('./profile.pdf', function(err, res) {
+          if (err) return console.log(err);
+          console.log(res);
+        });
+  });
 }
 
 promptUser();

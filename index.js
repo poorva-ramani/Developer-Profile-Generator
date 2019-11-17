@@ -1,7 +1,7 @@
 const fs = require("fs");
 const axios = require("axios");
-const inquirer = require("inquirer");
 var pdf = require('html-pdf');
+const inquirer = require("inquirer");
 
 function generateHTML(data,colour) {
   return `
@@ -36,8 +36,6 @@ function generateHTML(data,colour) {
     img{
       width: 200px;
       height: 200px;
-      z-index: 1;
-      display: block;
     }
     </style> 
     <title>Document</title>
@@ -46,10 +44,12 @@ function generateHTML(data,colour) {
       <div class="container-fluid vh-100 bg-light">
       <!--main card body-->
           <div class="row justify-content-center">
-              <div class="col-lg-8 card-body d-block border shadow rounded-lg p-3 m-3">
-                  <img class="rounded-circle justify-content-center" src="${data.avatar_url}" alt="...">
+          <div class="col-lg-9 card-body d-block border shadow rounded-lg m-3">
+          <img class="rounded-circle justify-content-center" src="${data.avatar_url}" alt="...">
                   <h2 class="text-center">Hi! </h2>
                   <h2 class="text-center"> My name is ${data.name}</h2>
+                  <h5 class="text-center"> Currently @ ${data.company}</h5>
+
                   <h6 class="text-center"> 
                     <a class="p-3"  href="https://www.google.com/maps/place/${data.location}" target="_blank"><svg id="i-location" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                       <circle cx="16" cy="11" r="4" />
@@ -71,21 +71,21 @@ function generateHTML(data,colour) {
             <h3>${data.bio}</h3>
           </div>
           <div class="row justify-content-center">
-              <div class="col-lg-3 card-body d-block border shadow rounded-lg p-3 m-3">
+              <div class="col-lg-4 card-body d-block border shadow rounded-lg m-3">
                 <h2 class="text-center">Public Respositories</h2>
                 <h4 class="text-center">${data.public_repos}</h4>
               </div>
-              <div class="col-lg-3 card-body d-block border shadow rounded-lg p-3 m-3">
+              <div class="col-lg-4 card-body d-block border shadow rounded-lg m-3">
                   <h2 class="text-center">Followers</h2>
                   <h4 class="text-center">${data.followers}</h4>
                 </div> 
           </div>
           <div class="row justify-content-center">
-              <div class="col-lg-3 card-body d-block border shadow rounded-lg p-3 m-3">
+              <div class="col-lg-4 card-body d-block border shadow rounded-lg m-3">
                 <h2 class="text-center">Github Stars</h2>
                 <h4 class="text-center">${data.followers}</h4>
               </div>
-              <div class="col-lg-3 card-body d-block border shadow rounded-lg p-3 m-3">
+              <div class="col-lg-4 card-body d-block border shadow rounded-lg m-3">
                   <h2 class="text-center">Following</h2>
                   <h4 class="text-center">${data.following}</h4>
                 </div> 
@@ -113,7 +113,7 @@ function promptUser() {
       axios
         .get(queryUrl)
         .then(function (res) {
-          console.log(colour);
+          console.log(res);
           const profile = generateHTML(res.data,colour);
 
           fs.writeFile("profile.html", profile, function (err) {

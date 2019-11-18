@@ -24,6 +24,10 @@ function generateHTML(data, colour, starCount) {
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
         crossorigin="anonymous"></script> 
     <style>
+    .container{
+      margin-right: 0;
+      margin-left: 0;
+    }
     .card-body{
       background-color: ${colour};
       color:white;
@@ -41,7 +45,7 @@ function generateHTML(data, colour, starCount) {
     <title>Document</title>
   </head>
     <body>
-      <div class="container-fluid vh-100 bg-light">
+      <div class="container bg-light">
       <!--main card body-->
           <div class="row text-center">
           <div class="col-lg-9 card-body d-block border shadow rounded-lg m-3">
@@ -139,13 +143,8 @@ function promptUser() {
     .then(() => {
       /* read from file system */
       var html = fs.readFileSync('profile.html', 'utf8');
-      var options = {
-        format: 'Letter', 
-        fitToPage: false, 
-        viewportSize: {
-          width: 600,
-          height: 600
-        },
+        var options = {
+          format: "Letter",
       };
       /* convert to pdf */
       pdf.create(html, options).toFile('profile.pdf', function (err, res) {
@@ -154,8 +153,5 @@ function promptUser() {
       });
     });
 }
-
-
-
 
 promptUser();

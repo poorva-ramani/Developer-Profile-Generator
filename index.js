@@ -3,7 +3,7 @@ const axios = require("axios");
 var pdf = require('html-pdf');
 const inquirer = require("inquirer");
 
-function generateHTML(data,colour) {
+function generateHTML(data, colour, starCount) {
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -43,14 +43,13 @@ function generateHTML(data,colour) {
     <body>
       <div class="container-fluid vh-100 bg-light">
       <!--main card body-->
-          <div class="row justify-content-center">
+          <div class="row text-center">
           <div class="col-lg-9 card-body d-block border shadow rounded-lg m-3">
-          <img class="rounded-circle justify-content-center" src="${data.avatar_url}" alt="...">
-                  <h2 class="text-center">Hi! </h2>
-                  <h2 class="text-center"> My name is ${data.name}</h2>
-                  <h5 class="text-center"> Currently @ ${data.company}</h5>
-
-                  <h6 class="text-center"> 
+                  <img class="rounded-lg justify-content-center p-2" src="${data.avatar_url}" alt="...">
+                  <h2> Hi! </h2>
+                  <h2> My name is ${data.name}</h2>
+                  <h5> Currently @ ${data.company}</h5>
+                  <h6> 
                     <a class="p-3"  href="https://www.google.com/maps/place/${data.location}" target="_blank"><svg id="i-location" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" fill="none" stroke="currentcolor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
                       <circle cx="16" cy="11" r="4" />
                       <path d="M24 15 C21 22 16 30 16 30 16 30 11 22 8 15 5 8 10 2 16 2 22 2 27 8 24 15 Z" />
@@ -67,27 +66,27 @@ function generateHTML(data,colour) {
                   </h6>
               </div>
           </div>
-          <div class="row justify-content-center">
+          <div class="row text-center">
             <h3>${data.bio}</h3>
           </div>
-          <div class="row justify-content-center">
+          <div class="row text-center">
               <div class="col-lg-4 card-body d-block border shadow rounded-lg m-3">
-                <h2 class="text-center">Public Respositories</h2>
-                <h4 class="text-center">${data.public_repos}</h4>
+                <h2>Public Respositories</h2>
+                <h4>${data.public_repos}</h4>
               </div>
               <div class="col-lg-4 card-body d-block border shadow rounded-lg m-3">
-                  <h2 class="text-center">Followers</h2>
-                  <h4 class="text-center">${data.followers}</h4>
+                  <h2>Followers</h2>
+                  <h4>${data.followers}</h4>
                 </div> 
           </div>
-          <div class="row justify-content-center">
+          <div class="row text-center">
               <div class="col-lg-4 card-body d-block border shadow rounded-lg m-3">
-                <h2 class="text-center">Github Stars</h2>
-                <h4 class="text-center">${data.followers}</h4>
+                <h2>Github Stars</h2>
+                <h4>${starCount}</h4>
               </div>
               <div class="col-lg-4 card-body d-block border shadow rounded-lg m-3">
-                  <h2 class="text-center">Following</h2>
-                  <h4 class="text-center">${data.following}</h4>
+                  <h2>Following</h2>
+                  <h4>${data.following}</h4>
                 </div> 
           </div>
       </div>
@@ -107,14 +106,26 @@ function promptUser() {
         name: "colour"
       }
     ])
-    .then(function ({username,colour}) {
+    .then(function ({ username, colour }) {
       const queryUrl = `https://api.github.com/users/${username}`;
 
       axios
         .get(queryUrl)
         .then(function (res) {
-          console.log(res);
-          const profile = generateHTML(res.data,colour);
+          // const starCount = (username) => {
+          //   const queryUrl = `https://api.github.com/users/${username}/repos`
+          //   axios
+          //   .get(queryUrl)
+          //   .then(function (response) {
+          //      let result = response.data.map(repo => repo.stargazers_count);
+          //      let count = result.reduce((a, b) => a + b, 0);
+          //      console.log(count)
+          //      return count;
+          //     });
+          // }
+
+          const count = 4;
+          const profile = generateHTML(res.data, colour, count);
 
           fs.writeFile("profile.html", profile, function (err) {
             if (err) {
@@ -127,14 +138,24 @@ function promptUser() {
     })
     .then(() => {
       /* read from file system */
-      var html = fs.readFileSync('./profile.html', 'utf8');
-      var options = { format: 'Letter' };
+      var html = fs.readFileSync('profile.html', 'utf8');
+      var options = {
+        format: 'Letter', 
+        fitToPage: false, 
+        viewportSize: {
+          width: 600,
+          height: 600
+        },
+      };
       /* convert to pdf */
-      pdf.create(html, options).toFile('./profile.pdf', function(err, res) {
-          if (err) return console.log(err);
-          console.log(res);
-        });
-  });
+      pdf.create(html, options).toFile('profile.pdf', function (err, res) {
+        if (err) return console.log(err);
+        console.log(res);
+      });
+    });
 }
+
+
+
 
 promptUser();

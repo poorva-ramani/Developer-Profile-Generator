@@ -123,16 +123,16 @@ function promptUser() {
               //  console.log(count)
                const profile = generateHTML(res.data, colour, count);
               console.log()
-               fs.writeFile("profile.html", profile, function (err) {
+               fs.writeFile("./output/profile.html", profile, function (err) {
                  if (err) {
                    throw err;
                  }
-                 var html = fs.readFileSync('profile.html', 'utf8');
+                 var html = fs.readFileSync('./output/profile.html', 'utf8');
                  var options = {
                    format: "Letter",
                   };
                   /* convert to pdf */
-                  pdf.create(html, options).toFile('profile.pdf', function (err, res) {
+                  pdf.create(html, options).toFile('./output/profile.pdf', function (err, res) {
                     if (err) return console.log(err);
                     console.log(res);
                   });

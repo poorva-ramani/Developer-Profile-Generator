@@ -12,6 +12,6 @@ Developer profile generator using nodejs. User inputs the github profile and the
 * Number of followers
 * Number of GitHub stars
 
-Demo to application -
+# Demo to application -
 
 ![](/demo/Dev_profile_generator_demo.gif)
